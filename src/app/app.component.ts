@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from './services/auth.service';
+import {DashboardComponent} from './dashboard/dashboard.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,  // ✅ Standalone component
-  imports: [CommonModule, RouterModule], // ✅ Import necessary modules
+  imports: [CommonModule, RouterModule, DashboardComponent], // ✅ Import necessary modules
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
