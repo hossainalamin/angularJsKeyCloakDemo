@@ -26,17 +26,17 @@ export class AuthService {
 
     try {
       const authenticated = await this.keycloak.init({
-        onLoad: 'check-sso',  // Check if the user is logged in, don't force login
-        silentCheckSsoRedirectUri: window.location.origin + '/assets/silent-check-sso.html', // For silent login checks
-        pkceMethod: 'S256', // Enable PKCE (Proof Key for Code Exchange) for security
-        checkLoginIframe: false // Disable iframe check to prevent reloading the page too frequently
+        onLoad: 'login-required', // Force login if not already authenticated
+        silentCheckSsoRedirectUri: window.location.origin + '/assets/silent-check-sso.html',
+        pkceMethod: 'S256',
+        checkLoginIframe: false,
       });
 
       this.initialized = true;
       console.log(authenticated ? 'Authenticated' : 'Not authenticated');
       return authenticated;
     } catch (error) {
-      console.error('Keycloak initialization failed', error);
+      console.error('Keycloak initialization failed:', error);
       return false;
     }
   }
@@ -44,9 +44,9 @@ export class AuthService {
   /**
    * Refresh the Keycloak token if needed
    */
-  private async refreshToken(): Promise<void> {
+  async refreshToken(): Promise<void> {
     try {
-      const refreshed = await this.keycloak.updateToken(70); // Refresh if token is expiring in 70 seconds
+      const refreshed = await this.keycloak.updateToken(70); // Refresh if token expires in 70 seconds
       console.log(refreshed ? 'Token refreshed' : 'Token still valid');
     } catch (error) {
       console.error('Failed to refresh token', error);
@@ -81,8 +81,8 @@ export class AuthService {
    * Trigger login process (redirect to Keycloak login page)
    */
   login(): void {
-    if (!this.keycloak.token) {
-      this.keycloak.login(); // Redirect to Keycloak login page if no token exists
+    if (!this.keycloak.token && !this.keycloak.authenticated) {
+      this.keycloak.login(); // Redirect to Keycloak login page if no token or not authenticated
     }
   }
 
