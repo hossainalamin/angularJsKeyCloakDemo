@@ -1,0 +1,20 @@
+<!-- assets/silent-check-sso.html -->
+<html>
+<head>
+  <script src="https://erpdevelopment.brac.net/auth/js/keycloak.js"></script>
+  <script type="text/javascript">
+    var keycloak = new Keycloak({
+      url: 'https://erpdevelopment.brac.net/idp',
+      realm: 'brac',
+      clientId: 'iou',
+    });
+    keycloak.init({ onLoad: 'check-sso' }).then(function (authenticated) {
+      if (authenticated) {
+        window.location.reload();
+      } else {
+        window.location.href = '/login';
+      }
+    });
+  </script>
+</head>
+</html>
